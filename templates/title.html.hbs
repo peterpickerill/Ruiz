@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{meta.title}}</title>
+    <link href="./static/slides.css", rel="stylesheet"/>
+    {{#if meta.background}}
+        <style>
+            body {
+                background-image: url("static/images/{{meta.background}}");
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+            }
+        </style> 
+    {{/if}}
+</head>
+<body>
+    <main>
+        <h1>{{title}}</h1>
+    </main>
+    <footer>
+        <a id="next" href="{{meta.start}}"><button role="button" class="next">Start Quiz</button></a>
+    </footer>
+    <script>
+        document.addEventListener('keydown', function(event) {
+            if (event.code == "Enter") {
+                document.getElementById("next").click();
+            }
+        });
+    </script>
+</body>
+</html>
