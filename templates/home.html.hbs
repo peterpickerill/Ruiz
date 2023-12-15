@@ -1,59 +1,73 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{meta.title}}</title>
-    <link href="/static/slides.css", rel="stylesheet"/>
+    <link href="/static/slides.css" , rel="stylesheet" />
     {{#if meta.background}}
-        <style>
-            body {
-                background-image: url("static/images/{{meta.background}}");
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-                background-size: cover;
-            }
-        </style> 
+      <style>
+        body { background-image: url("static/images/{{meta.background}}");
+        background-repeat: no-repeat; background-attachment: fixed;
+        background-size: cover; }
+      </style>
     {{/if}}
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        {{#if question.topic}}
-            <div class="pill">
-                <span>Topic: {{question.topic}}</span>
-            </div>
-            <div class="pill">
-                <span>Question: {{question.number}}</span>
-            </div>
-        {{/if}}
+      {{#if question.topic}}
+        <div class="pill">
+          <span>Topic: {{question.topic}}</span>
+        </div>
+        <div class="pill">
+          <span>Question: {{question.number}}</span>
+        </div>
+      {{/if}}
     </header>
     <main>
+      <div class="flex">
+        {{#if question.image}}
+         <div class="image-container">
+          <img src="{{question.image}}" alt="" />
+        </div>
+        {{/if}}
         <h1>{{question.text}}</h1>
+        {{#if question.answer}}
+        <div class="answer">
+            <span>{{question.answer}}</span>
+        </div>
+        {{/if}}
+        {{#unless question.answer}}
+        {{#if question.options}}
+            <div class="options-grid">
+                {{#each question.options}}
+                    <span>{{this}}</span>
+                {{/each}}
+            </div>
+        {{/if}}
+        {{/unless}}
+      </div>
+
     </main>
     <footer>
-        <a id="prev" href="{{meta.prev}}"><button role="button">Previous</button></a>
-        <a id="next" href="{{meta.next}}"><button role="button" class="next">Next</button></a>
+      <a id="prev" href="{{meta.prev}}"><button
+          role="button"
+        >Previous</button></a>
+      <a id="next" href="{{meta.next}}"><button
+          role="button"
+          class="next"
+        >Next</button></a>
     </footer>
     <script>
-        function go_left() {
-            document.getElementById("prev").click();
+      function go_left() { document.getElementById("prev").click(); } 
+      function go_right(){ document.getElementById("next").click(); }
+      document.addEventListener('keydown', function(event) { 
+        if (event.code == 'ArrowLeft') {
+            go_left();
         }
-        function go_right(){
-            document.getElementById("next").click();
+        if (event.code == 'ArrowRight') {
+            go_right();
         }
-
-        document.addEventListener('keydown', function(event) {
-            switch (event.code) {
-                case 'ArrowLeft':
-                    go_left();
-                    break;
-                case 'ArrowRight':
-                    go_right();
-                    break;
-                default:
-                    //nothing
-            };
-        });
+      });
     </script>
-</body>
+  </body>
 </html>

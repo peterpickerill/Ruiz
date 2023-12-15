@@ -1,34 +1,26 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{meta.title}}</title>
-    <link href="./static/slides.css", rel="stylesheet"/>
-    {{#if meta.background}}
-        <style>
-            body {
-                background-image: url("static/images/{{meta.background}}");
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-                background-size: cover;
-            }
-        </style> 
-    {{/if}}
-</head>
-<body>
+    <link href="/static/slides.css" , rel="stylesheet" />
+  </head>
+  <body>
     <main>
-        <h1>{{title}}</h1>
+      <div class="flex">
+        {{#if question.image}}
+          <div class="image-container">
+            <img src="/static/images/end.jpg" alt="" />
+          </div>
+        {{/if}}
+        <h1>End of the quiz!</h1>
+      </div>
     </main>
     <footer>
-        <a id="next" href="{{meta.start}}"><button role="button" class="next">Start Quiz</button></a>
+      <a id="next" href="{{meta.link}}"><button
+          role="button"
+          class="next"
+        >See Answers</button></a>
     </footer>
-    <script>
-        document.addEventListener('keydown', function(event) {
-            if (event.code == "Enter") {
-                document.getElementById("next").click();
-            }
-        });
-    </script>
-</body>
+  </body>
 </html>

@@ -57,7 +57,7 @@ fn index(quiz: &State<Root>) -> Template {
         title: quiz.meta.title.as_str(),
         meta: context! {
             title: quiz.meta.title.as_str(),
-            start: uri!(show_question(1))
+            start: uri!(show_question(1, false))
         }
     })   
 }
@@ -68,29 +68,39 @@ fn end(quiz: &State<Root>) -> Template {
         title: quiz.meta.title.as_str(),
         meta: context! {
             title: quiz.meta.title.as_str(),
-            start: uri!(show_question(1))
+            start: uri!(show_question(1, false))
         }
     })   
 }
 
-#[get("/question/<question_number>")]
-fn show_question(quiz: &State<Root>, question_number: usize) -> Template {
-    let num_of_questions = quiz.questions.len();
-    let question = quiz.questions[question_number - 1].clone();
-    let prev_question = cmp::max(question_number - 1, 1);
+#[get("/question/<question_number>?<answer>")]
+fn show_question(quiz: &State<Root>, question_number: usize, answer: bool) -> Template {
+    let question_option = quiz.questions.get(question_number);
+    let prev_question = cmp::max(question_number, 1) - 1 ;
     let next_question = question_number + 1;
     let real_question_number = quiz.questions.clone().into_iter().take(question_number).filter(|s| s.type_field != QuestionType::TopicIntro).count();
 
     let prev_link = match question_number {
         1 => uri!(index),
-        _ => uri!(show_question(prev_question))
+        _ => uri!(show_question(prev_question, answer))
     };
 
-    let next_link = uri!(show_question(next_question));
+    if (question_option.is_none()) {
+        return Template::render(QUIZ_END_TEMPLATE_NAME, context! {
+            meta: context! {
+                title: quiz.meta.title.as_str(),
+                link: uri!(show_question(1, true))
+            },
+        }); 
+    }
+    let question = quiz.questions[question_number - 1].clone();
+
+    let next_link = uri!(show_question(next_question, answer));
 
     if question.type_field == QuestionType::TopicIntro {
         return Template::render(QUIZ_TOPIC_TEMPLATE_NAME, context! {
             title: question.topic.as_str(),
+            image: question.image,
             meta: context! {
                 title: quiz.meta.title.as_str(),
                 prev: prev_link,
@@ -100,6 +110,18 @@ fn show_question(quiz: &State<Root>, question_number: usize) -> Template {
         });
     }
 
+    let options = match question.options {
+        Some(x) => x,
+        None => vec!()
+    };
+    let image = match question.image {
+        Some(x) => x,
+        None => String::new()
+    };
+    let question_answer = match answer {
+        true => question.answer.unwrap_or(String::new()),
+        false => String::new()
+    };
     Template::render(
         QUESTION_TEMPLATE_NAME,
         context! {
@@ -112,7 +134,10 @@ fn show_question(quiz: &State<Root>, question_number: usize) -> Template {
             question: context! {
                 number: real_question_number,
                 topic: question.topic,
-                text: question.question
+                text: question.question,
+                image: image,
+                options: options,
+                answer: question_answer
             }
         },
     )
